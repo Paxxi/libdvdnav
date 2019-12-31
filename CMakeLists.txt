@@ -122,6 +122,10 @@ if(MSVC)
       /debug:full
       /INCREMENTAL:NO
   )
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+      shell32.lib
+  )
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/DEF:\"${CMAKE_CURRENT_SOURCE_DIR}/msvc/libdvdnav.def\"")
   if(CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
      # fix linkage with dvdcss
