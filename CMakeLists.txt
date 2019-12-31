@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 
-set(DVDNAV_VERSION_MAJOR 5)
+set(DVDNAV_VERSION_MAJOR 6)
 set(DVDNAV_VERSION_MINOR 0)
-set(DVDNAV_VERSION_MICRO 4)
+set(DVDNAV_VERSION_MICRO 1)
 set(DVDNAV_VERSION "${DVDNAV_VERSION_MAJOR}.${DVDNAV_VERSION_MINOR}.${DVDNAV_VERSION_MICRO}")
 set(PACKAGE_VERSION ${DVDNAV_VERSION})
 
@@ -49,9 +49,10 @@ if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     set(_WIN32_IE "0x0A00")
   else()
-    set(_WIN32_IE "0x0600")
+    set(_WIN32_IE "0x0601")
   endif()
   set(UNUSED " ")
+
 else()
   set(UNUSED "__attribute__((unused))")
 endif()
@@ -111,6 +112,15 @@ if(MSVC)
       _CRT_SECURE_NO_WARNINGS
       _CRT_NONSTDC_NO_DEPRECATE
       PATH_MAX=1024
+  )
+  target_compile_options(${PROJECT_NAME}
+    PRIVATE
+      /sdl-
+  )
+  target_link_options(${PROJECT_NAME}
+    PRIVATE
+      /debug:full
+      /INCREMENTAL:NO
   )
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/DEF:\"${CMAKE_CURRENT_SOURCE_DIR}/msvc/libdvdnav.def\"")
   if(CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
