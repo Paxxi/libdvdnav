@@ -63,6 +63,21 @@ link_t play_PGC(vm_t *vm) {
   (vm->state).cellN = 0;
   (vm->state).blockN = 0;
 
+  /* Handle random playback mode by choosing our initial program
+   * number randomly - some discs end up jumping to nowhere if you
+   * always choose the first cell.
+   */
+  if ((vm->state).pgc->pg_playback_mode!=0 &&
+      ((vm->state).pgc->pg_playback_mode & 0x80)==0) {
+    int pgCnt = ((vm->state).pgc->pg_playback_mode & 0x7f) + 1;
+    if (pgCnt > (vm->state).pgc->nr_of_programs) {
+      pgCnt = (vm->state).pgc->nr_of_programs;
+    }
+    if (pgCnt>1) {
+      (vm->state).pgN = 1 + ((int) ((float) pgCnt * rand()/(RAND_MAX+1.0)));
+    }
+  }
+
   /* eval -> updates the state and returns either
      - some kind of jump (Jump(TT/SS/VTS_TTN/CallSS/link C/PG/PGC/PTTN)
      - just play video i.e first PG
@@ -216,8 +231,8 @@ link_t play_Cell(vm_t *vm) {
       }
 #endif
       break;
-    case 2: /*  ?? */
-    case 3: /*  ?? */
+    case 2: /*  reserved */
+    case 3: /*  reserved */
     default:
       fprintf(MSG_OUT, "libdvdnav: Invalid? Cell block_mode (%d), block_type (%d)\n",
               (vm->state).pgc->cell_playback[(vm->state).cellN - 1].block_mode,
@@ -304,8 +319,8 @@ link_t play_Cell_post(vm_t *vm) {
         (vm->state).cellN++;
       }
       break;
-    case 2: /*  ?? */
-    case 3: /*  ?? */
+    case 2: /*  reserved */
+    case 3: /*  reserved */
     default:
       fprintf(MSG_OUT, "libdvdnav: Invalid? Cell block_mode (%d), block_type (%d)\n",
               (vm->state).pgc->cell_playback[(vm->state).cellN - 1].block_mode,
